@@ -6,7 +6,7 @@ function Stories() {
   return (
     <View
       style={{
-        height: 128,
+        height: 128.5,
         width: '100%',
         backgroundColor: '#fafafa',
         borderBottomColor: '#dbdbdb',
@@ -27,15 +27,17 @@ function Stories() {
         <Text>Watch all</Text>
       </View>
       <ScrollView horizontal style={{ paddingLeft: 10.5, marginTop: 14.5 }}>
+        <Circle
+          imgUrl="https://source.unsplash.com/random/60x60"
+          story={{ has: false, new: false }}
+          isOwn={true}
+        />
         {Array(9)
           .fill(null)
           .map((_, i) => (
             <Circle
               imgUrl="https://source.unsplash.com/random/60x60"
-              height={60}
-              width={60}
-              story={{ has: i % 2 === 0, new: i % 3 === 0 }}
-              inset={4}
+              story={{ has: true, new: i % 3 === 0 }}
               key={i}
             />
           ))}

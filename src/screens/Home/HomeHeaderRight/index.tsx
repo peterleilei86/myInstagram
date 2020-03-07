@@ -8,7 +8,7 @@ function HomeHeaderRight() {
       <View style={{ marginRight: 10 }}>
         <Image
           source={require('./img/fly.png')}
-          style={{ width: 23, height: 21.5 }}
+          style={{ width: 22.5, height: 19.5 }}
         />
       </View>
     </TouchableOpacity>

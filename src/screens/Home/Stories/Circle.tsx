@@ -1,62 +1,112 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import {
+  View,
+  Image,
+  StyleProp,
+  TouchableWithoutFeedback,
+  Text,
+} from 'react-native';
 
 interface Profile {
-  imgUrl: string;
+  imgUrl?: string;
   story: { has: boolean; new: boolean };
-  height: number;
-  width: number;
-  inset: number;
+  height?: number;
+  width?: number;
+  isOwn?: boolean;
+  isStory?: boolean;
+  styleProp?: StyleProp<any>;
 }
 
-function Circle({ imgUrl, story, height, width, inset }: Profile) {
+function Circle({
+  imgUrl,
+  story,
+  height,
+  isOwn = false,
+  width,
+  isStory = true,
+  styleProp,
+}: Profile) {
   return (
-    <View
-      style={
-        story.has && story.new
-          ? {
-              width: width + inset,
-              height: height + inset,
-              borderRadius: 50,
-              borderColor: 'red',
-              borderWidth: 2,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginRight: 21,
-            }
-          : null
-      }
-    >
+    <TouchableWithoutFeedback onPress={() => {}}>
       <View
         style={[
           {
-            borderRadius: 50,
-            width: width - inset,
-            height: height - inset,
             justifyContent: 'center',
             alignItems: 'center',
+            marginRight: 21,
           },
-          !story.has && { marginRight: 21, width, height },
-          story.has &&
-            !story.new && {
-              marginRight: 21,
-              width: width + inset,
-              height: height + inset,
-              borderColor: '#dbdbdb',
-            },
+          styleProp,
         ]}
       >
-        <Image
-          source={{ uri: imgUrl }}
-          style={{
-            width: story.has ? 56 : 60,
-            height: story.has ? 56 : 60,
-            borderRadius: 50,
-          }}
-        />
+        <View
+          style={[
+            {
+              width,
+              height,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 50,
+              position: 'relative',
+            },
+            story.has && {
+              padding: 2,
+              borderWidth: 1.5,
+              borderColor: story.new ? 'red' : '#dbdbdb',
+            },
+          ]}
+        >
+          {!story.has && isOwn && (
+            <View
+              style={{
+                borderRadius: 50,
+                backgroundColor: '#3897f0',
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: 15,
+                height: 15,
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 2,
+              }}
+            >
+              <Image
+                source={require('./img/add.png')}
+                style={{
+                  width: 8,
+                  height: 8,
+                }}
+              />
+            </View>
+          )}
+          <Image
+            source={{ uri: imgUrl }}
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: 50,
+            }}
+          />
+        </View>
+        {isStory && (
+          <Text
+            style={{
+              fontSize: 12,
+              color: isOwn ? '#a5a5a5' : '#262626',
+              marginTop: 2.5,
+            }}
+          >
+            Your Story
+          </Text>
+        )}
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
+
+Circle.defaultProps = {
+  width: 64,
+  height: 64,
+};
 
 export default Circle;
