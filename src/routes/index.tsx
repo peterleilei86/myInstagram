@@ -47,13 +47,8 @@ const AuthenticatedRoutes = () => (
 
 function Routes() {
   const { token, isLoading } = useAuth();
-  const [initial, setInitial] = useState(true);
 
-  useEffect(() => {
-    setInitial(false);
-  }, []);
-
-  if (initial && isLoading) {
+  if (isLoading) {
     return <AuthLoading />;
   }
   return token ? <AuthenticatedRoutes /> : <AuthRoutes />;
