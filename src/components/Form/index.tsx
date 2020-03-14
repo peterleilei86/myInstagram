@@ -69,7 +69,7 @@ function Form() {
 
   const handleSignIn = () => {
     if (validateFields()) {
-      signIn(email, password);
+      signIn({ email, password });
     }
   };
 

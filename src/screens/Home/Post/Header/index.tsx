@@ -1,10 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
-import * as faker from 'faker';
 import Title from './Title';
 import PostOptions from './PostOptions';
+import { IUser } from '../../../../hacks';
 
-export default () => {
+export default ({ user }: { user: Partial<IUser> }) => {
   return (
     <View
       style={{
@@ -18,10 +18,7 @@ export default () => {
         justifyContent: 'space-between',
       }}
     >
-      <Title
-        imgUrl={'https://source.unsplash.com/random/60X60'}
-        name={faker.name.firstName()}
-      />
+      <Title imgUrl={user.avatarImg!} name={user.displayName!} />
       <PostOptions />
     </View>
   );

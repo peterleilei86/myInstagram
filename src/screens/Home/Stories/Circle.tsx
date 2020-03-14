@@ -9,6 +9,7 @@ import {
 
 interface Profile {
   imgUrl?: string;
+  username: string;
   story: { has: boolean; new: boolean };
   height?: number;
   width?: number;
@@ -19,6 +20,7 @@ interface Profile {
 
 function Circle({
   imgUrl,
+  username,
   story,
   height,
   isOwn = false,
@@ -90,13 +92,16 @@ function Circle({
         </View>
         {isStory && (
           <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
             style={{
-              fontSize: 12,
+              width: 60,
+              fontSize: 10,
               color: isOwn ? '#a5a5a5' : '#262626',
               marginTop: 2.5,
             }}
           >
-            Your Story
+            {username}
           </Text>
         )}
       </View>

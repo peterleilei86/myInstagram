@@ -6,9 +6,7 @@ import React, {
   useState,
 } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-
-const sleep = (wait = 1000) =>
-  new Promise(resolve => setTimeout(resolve, wait));
+import { sleep } from '../../hacks';
 
 const AuthContext = createContext({});
 
@@ -46,8 +44,8 @@ function AuthProvider({ children }: any) {
           // THEN PERSIST DATA IN ASYNCSTORAGE
           setIsloading(true);
           await sleep();
-          setToken('dummy-token');
-          AsyncStorage.setItem('__USERTOKEN__', JSON.stringify('dummy-token'));
+          setToken(JSON.stringify(data));
+          AsyncStorage.setItem('__USERTOKEN__', JSON.stringify(data));
           setIsloading(false);
         } catch (error) {
           // SHOW ERROR WHEN SIGN IN FAILS
@@ -67,13 +65,13 @@ function AuthProvider({ children }: any) {
         try {
           setIsloading(true);
           await sleep();
-          setToken('dummy-token');
+          setToken(JSON.stringify(data));
           setIsloading(false);
-          AsyncStorage.setItem('__USERTOKEN__', JSON.stringify('dummy-token'));
+          AsyncStorage.setItem('__USERTOKEN__', JSON.stringify(data));
         } catch (error) {
           setToken('');
           setIsloading(false);
-          AsyncStorage.clear;
+          AsyncStorage.clear();
         }
       },
     }),

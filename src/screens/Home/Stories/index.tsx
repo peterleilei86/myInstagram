@@ -1,8 +1,15 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import Circle from './Circle';
+import { IStory, IUser } from '../../../hacks/typs';
 
-function Stories() {
+function Stories({
+  stories,
+  user,
+}: {
+  stories: IStory[];
+  user: Partial<IUser>;
+}) {
   return (
     <View
       style={{
@@ -15,19 +22,21 @@ function Stories() {
     >
       <ScrollView horizontal style={{ paddingLeft: 10.5 }}>
         <Circle
-          imgUrl="https://source.unsplash.com/random/60x60"
+          imgUrl={user.avatarImg!}
+          username={user.displayName!}
           story={{ has: false, new: false }}
           isOwn={true}
         />
-        {Array(9)
-          .fill(null)
-          .map((_, i) => (
+        {stories.map((s, i) => {
+          return (
             <Circle
-              imgUrl="https://source.unsplash.com/random/60x60"
-              story={{ has: true, new: i % 3 === 0 }}
+              imgUrl={s.avatarImage}
+              username={s.username!}
+              story={{ has: true, new: s.isNew }}
               key={i}
             />
-          ))}
+          );
+        })}
       </ScrollView>
     </View>
   );

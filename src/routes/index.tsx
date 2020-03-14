@@ -5,7 +5,7 @@ import {
   SignIn,
   Home,
   Settings,
-  AuthLoading,
+  Loading,
   Search,
   Add,
   Activity,
@@ -34,7 +34,7 @@ const AuthenticatedStack = createBottomTabNavigator();
 
 const HomeStack = createStackNavigator();
 
-const HomeRoutes = () => (
+const HomeRoutes = ({ route }: any) => (
   <HomeStack.Navigator>
     <HomeStack.Screen
       options={{
@@ -42,13 +42,14 @@ const HomeRoutes = () => (
         headerRight: () => <HomeHeaderRight />,
         headerLeft: () => <HomeHeaderLeft />,
       }}
+      initialParams={{ token: route.params.token }}
       name="Home"
       component={Home}
     />
   </HomeStack.Navigator>
 );
 
-const AuthenticatedRoutes = () => (
+const AuthenticatedRoutes = ({ token }: { token: string }) => (
   <AuthenticatedStack.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused }) => {
@@ -115,7 +116,11 @@ const AuthenticatedRoutes = () => (
       showLabel: false,
     }}
   >
-    <AuthenticatedStack.Screen name="Home" component={HomeRoutes} />
+    <AuthenticatedStack.Screen
+      initialParams={{ token }}
+      name="Home"
+      component={HomeRoutes}
+    />
     <AuthenticatedStack.Screen name="Search" component={Search} />
     <AuthenticatedStack.Screen name="Add" component={Add} />
     <AuthenticatedStack.Screen name="Activity" component={Activity} />
@@ -127,9 +132,9 @@ function Routes() {
   const { token, isLoading } = useAuth();
 
   if (isLoading) {
-    return <AuthLoading />;
+    return <Loading size="large" />;
   }
-  return token ? <AuthenticatedRoutes /> : <AuthRoutes />;
+  return token ? <AuthenticatedRoutes token={token} /> : <AuthRoutes />;
 }
 
 export default Routes;

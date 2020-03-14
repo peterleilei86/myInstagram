@@ -1,33 +1,35 @@
 import React from 'react';
 import { View } from 'react-native';
-import * as faker from 'faker';
 import Header from './Header';
 import PostImage from './PostImage';
 import PostActions from './PostActions';
 import Comment from './Comment';
 import Time from './Time';
+import { IPost } from '../../../hacks';
 
-function Post() {
+function Post({
+  post: { user, img, caption, comments, timestamp },
+}: {
+  post: IPost;
+}) {
   return (
     <View>
-      <Header />
-      <PostImage />
+      <Header user={user} />
+      <PostImage imgUrl={img} />
       <View style={{ paddingHorizontal: 15.5 }}>
         <PostActions />
         <Comment
-          username={faker.name.firstName()}
-          message={'#hashtag #letsgo' + faker.lorem.sentence(10)}
+          username={user.displayName!}
+          comment={'#hashtag #letsgo ' + caption}
         />
-        <Time time={'3 Hours Ago'} />
-        {Array(3)
-          .fill(null)
-          .map((_, i) => (
-            <Comment
-              key={i}
-              username={faker.name.firstName()}
-              message={faker.lorem.sentences(2)}
-            />
-          ))}
+        {comments.map((comment, i) => (
+          <Comment
+            key={i}
+            username={comment.username}
+            comment={comment.comment}
+          />
+        ))}
+        <Time time={timestamp.toLocaleDateString()} />
       </View>
     </View>
   );

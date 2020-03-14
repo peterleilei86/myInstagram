@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Image, TouchableWithoutFeedback, Alert } from 'react-native';
+import Loading from '../../../../components/LoadingIndicator';
 
 interface PostImageProps {
-  delay?: number;
+  imgUrl: string;
 }
 
-export default ({ delay = 300 }: PostImageProps) => {
+export default ({ imgUrl }: PostImageProps) => {
+  const [loading, setLoading] = useState(true);
   let lastTap: any = null;
+  const delay = 300;
   const onDoubleTap = () => {
     //TODO: toggle like
     Alert.alert('hi', 'you double tapped!');
@@ -25,7 +28,8 @@ export default ({ delay = 300 }: PostImageProps) => {
     <TouchableWithoutFeedback onPress={handleDouleTap}>
       <View style={{ width: '100%', height: 375 }}>
         <Image
-          source={{ uri: 'https://source.unsplash.com/random/375X375' }}
+          loadingIndicatorSource={require('../../../../assets/loading.svg')}
+          source={{ uri: imgUrl }}
           style={{ width: '100%', height: '100%' }}
         />
       </View>
