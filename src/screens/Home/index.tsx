@@ -1,19 +1,19 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { AuthenticatedStackList } from 'src/routes/types';
 import Stories from './Stories';
 import Post from './Post';
 import { usePost, useStories } from './Post/hooks';
 import { getUser } from '../../hacks';
-import { RouteProp } from '@react-navigation/native';
 
-/**
- * DONE: 1.Fetch posts data
- * DONE: 2.wrap Post component in FLATLIST
- */
-
-function HomeScreen({ route }: any) {
+function HomeScreen({
+  route,
+}: {
+  route: RouteProp<AuthenticatedStackList, 'Home'>;
+}) {
   const { posts, setCurrentPage } = usePost();
-  const { stories, setStories } = useStories();
+  const { stories } = useStories();
   const { email } = JSON.parse(route.params.token);
   const user = getUser(email);
 

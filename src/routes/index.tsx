@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  StackNavigationProp,
+} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   SignIn,
   Home,
-  Settings,
   Loading,
   Search,
   Add,
@@ -16,8 +18,10 @@ import HomeHeaderTitle from '../screens/Home/HomeHeaderTitle';
 import HomeHeaderRight from '../screens/Home/HomeHeaderRight';
 import HomeHeaderLeft from '../screens/Home/HomeHeaderLeft';
 import Icon from '../components/Icon';
+import { AuthStackList, AuthenticatedStackList, HomeStackList } from './types';
+import { RouteProp } from '@react-navigation/native';
 
-const AuthStack = createStackNavigator();
+const AuthStack = createStackNavigator<AuthStackList>();
 
 const AuthRoutes = () => (
   <AuthStack.Navigator
@@ -30,11 +34,15 @@ const AuthRoutes = () => (
   </AuthStack.Navigator>
 );
 
-const AuthenticatedStack = createBottomTabNavigator();
+const AuthenticatedStack = createBottomTabNavigator<AuthenticatedStackList>();
 
-const HomeStack = createStackNavigator();
+const HomeStack = createStackNavigator<HomeStackList>();
 
-const HomeRoutes = ({ route }: any) => (
+const HomeRoutes = ({
+  route,
+}: {
+  route: RouteProp<AuthenticatedStackList, 'Home'>;
+}) => (
   <HomeStack.Navigator>
     <HomeStack.Screen
       options={{
@@ -129,11 +137,7 @@ const AuthenticatedRoutes = ({ token }: { token: string }) => (
 );
 
 function Routes() {
-  const { token, isLoading } = useAuth();
-
-  if (isLoading) {
-    return <Loading size="large" />;
-  }
+  const { token } = useAuth();
   return token ? <AuthenticatedRoutes token={token} /> : <AuthRoutes />;
 }
 
