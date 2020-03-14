@@ -21,8 +21,7 @@ function AuthProvider({ children }: any) {
       try {
         userToken = (await AsyncStorage.getItem('__USERTOKEN__')) || '';
       } catch (e) {
-        setToken('');
-        // Restoring token failed
+        console.log(e);
       } finally {
         setToken(userToken);
         setIsloading(false);
@@ -37,19 +36,15 @@ function AuthProvider({ children }: any) {
     () => ({
       signIn: async (data: any) => {
         try {
-          //TODO:
-          // SEND DATA TO SERVER TO GET TOKEN
-          // THEN PERSIST DATA IN ASYNCSTORAGE
           setIsloading(true);
           await sleep();
           setToken(JSON.stringify(data));
           AsyncStorage.setItem('__USERTOKEN__', JSON.stringify(data));
-          setIsloading(false);
         } catch (error) {
-          // SHOW ERROR WHEN SIGN IN FAILS
           setToken('');
-          setIsloading(false);
           AsyncStorage.clear();
+        } finally {
+          setIsloading(false);
         }
       },
       signOut: async () => {
@@ -64,12 +59,12 @@ function AuthProvider({ children }: any) {
           setIsloading(true);
           await sleep();
           setToken(JSON.stringify(data));
-          setIsloading(false);
           AsyncStorage.setItem('__USERTOKEN__', JSON.stringify(data));
         } catch (error) {
           setToken('');
-          setIsloading(false);
           AsyncStorage.clear();
+        } finally {
+          setIsloading(false);
         }
       },
     }),
