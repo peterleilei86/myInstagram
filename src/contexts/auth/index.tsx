@@ -5,6 +5,7 @@ import React, {
   useContext,
   useState,
 } from 'react';
+import SplashScreen from 'react-native-splash-screen';
 import AsyncStorage from '@react-native-community/async-storage';
 import { sleep } from '../../hacks';
 
@@ -22,14 +23,11 @@ function AuthProvider({ children }: any) {
       } catch (e) {
         setToken('');
         // Restoring token failed
+      } finally {
+        setToken(userToken);
+        setIsloading(false);
+        SplashScreen.hide();
       }
-
-      // After restoring token, we may need to validate it in production apps
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      setToken(userToken);
-      setIsloading(false);
     };
 
     bootstrapAsync();
