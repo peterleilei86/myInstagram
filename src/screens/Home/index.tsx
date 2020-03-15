@@ -16,13 +16,16 @@ function HomeScreen({
     state: { posts, refreshing },
     onLoad,
   } = usePost();
-  const { stories } = useStories();
+  const { stories, refreshStories } = useStories();
   const { email } = JSON.parse(route.params.token);
   const user = getUser(email);
 
   const fetchMorePosts = () => onLoad();
 
-  const handleRefresh = () => onLoad(false, true);
+  const handleRefresh = () => {
+    refreshStories();
+    onLoad(false, true);
+  };
 
   const handleRenderItem = ({ item, index }: any) => {
     return <Post key={index} post={item} />;

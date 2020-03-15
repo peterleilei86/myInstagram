@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useReducer } from 'react';
 import { fetchPosts, generateStories } from '../../../../hacks';
 import { IPost, IStory } from '../../../../hacks/typs';
 
-const initialState = {
+const initialState: { posts: IPost[]; refreshing: boolean; error: string } = {
   posts: [],
   refreshing: false,
   error: '',
@@ -59,5 +59,6 @@ export const usePost = () => {
 export const useStories = () => {
   const initialStories = generateStories();
   const [stories, setStories] = useState<IStory[]>(initialStories);
-  return { stories, setStories };
+  const refreshStories = () => setStories(generateStories());
+  return { stories, refreshStories };
 };
