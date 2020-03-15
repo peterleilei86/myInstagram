@@ -12,12 +12,17 @@ function HomeScreen({
 }: {
   route: RouteProp<AuthenticatedStackList, 'Home'>;
 }) {
-  const { posts, setCurrentPage } = usePost();
+  const {
+    state: { posts, refreshing },
+    onLoad,
+  } = usePost();
   const { stories } = useStories();
   const { email } = JSON.parse(route.params.token);
   const user = getUser(email);
 
-  const fetchMorePosts = () => setCurrentPage(p => p + 1);
+  const fetchMorePosts = () => onLoad();
+
+  const handleRefresh = () => onLoad(false, true);
 
   const handleRenderItem = ({ item, index }: any) => {
     return <Post key={index} post={item} />;
@@ -31,8 +36,10 @@ function HomeScreen({
         ListHeaderComponent={() => {
           return <Stories user={user} stories={stories} />;
         }}
+        refreshing={refreshing}
         onEndReached={fetchMorePosts}
         onEndReachedThreshold={0.3}
+        onRefresh={handleRefresh}
       />
     </View>
   );

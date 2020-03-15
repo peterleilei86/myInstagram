@@ -1,26 +1,59 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import { fetchPosts, generateStories } from '../../../../hacks';
 import { IPost, IStory } from '../../../../hacks/typs';
 
+const initialState = {
+  posts: [],
+  refreshing: false,
+  error: '',
+};
+
+const postReducer = (state = initialState, action: any) => {
+  switch (action.type) {
+    case 'onLoad':
+      return {
+        ...state,
+        posts:
+          action.payload.initial || action.payload.refreshing
+            ? action.payload.posts
+            : [...state.posts, ...action.payload.posts],
+      };
+    case 'onRefreshing':
+      return { ...state, refreshing: action.payload };
+    case 'onError':
+      return { ...state, error: action.payload.message };
+    default:
+      return state;
+  }
+};
+
+const POSTSLIMIT = 10;
 export const usePost = () => {
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const pageRef = useRef<number>(0);
+  const [state, dispatch] = useReducer(postReducer, initialState);
+
+  const onLoad = async (
+    initial: boolean = false,
+    refreshing: boolean = false,
+  ) => {
+    try {
+      if (refreshing) dispatch({ type: 'onRefreshing', payload: true });
+      const { posts, status } = await fetchPosts(POSTSLIMIT);
+
+      if (status === 'success') {
+        dispatch({ type: 'onLoad', payload: { initial, refreshing, posts } });
+      }
+    } catch (error) {
+      dispatch({ type: 'onError', payload: { message: 'On Load Error' } });
+    } finally {
+      if (refreshing) dispatch({ type: 'onRefreshing', payload: false });
+    }
+  };
 
   useEffect(() => {
-    const getPosts = async () => {
-      const { posts, status } = await fetchPosts(10);
-      if (status === 'success') {
-        setPosts(prev => [...prev, ...posts]);
-      }
-    };
-    if (currentPage >= pageRef.current) {
-      getPosts();
-      pageRef.current = currentPage;
-    }
-  }, [currentPage]);
+    onLoad(true);
+  }, []);
 
-  return { posts, setPosts, setCurrentPage };
+  return { state, onLoad };
 };
 
 export const useStories = () => {

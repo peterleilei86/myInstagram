@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import Title from './Title';
 import PostOptions from './PostOptions';
-import { IUser } from '../../../../hacks';
+import { IUser } from '../../../../hacks/typs';
 
 export default ({ user }: { user: Partial<IUser> }) => {
   return (

@@ -5,7 +5,7 @@ import PostImage from './PostImage';
 import PostActions from './PostActions';
 import Comment from './Comment';
 import Time from './Time';
-import { IPost } from '../../../hacks';
+import { IPost } from '../../../hacks/typs';
 
 function Post({
   post: { user, img, caption, comments, timestamp },
