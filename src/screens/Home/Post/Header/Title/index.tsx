@@ -1,14 +1,14 @@
 import React from 'react';
 import Circle from '../../../Stories/Circle';
 import { View, Text } from 'react-native';
+import { IUser } from 'src/hacks/typs';
 
 interface TitleProps {
-  name: string;
-  imgUrl: string;
+  user: Partial<IUser>;
   location?: string;
 }
 
-function Title({ name, location, imgUrl }: TitleProps) {
+function Title({ user, location }: TitleProps) {
   return (
     <View
       style={{
@@ -18,16 +18,18 @@ function Title({ name, location, imgUrl }: TitleProps) {
       }}
     >
       <Circle
-        imgUrl={imgUrl}
+        userId={user.id!}
+        imgUrl={user.avatarImg}
         height={35}
         width={35}
-        story={{ has: true, new: true }}
+        stories={user.stories!}
         styleProp={{ marginRight: 0 }}
         isStory={false}
+        onPress={() => {}}
       />
       <View style={{ marginLeft: 5, justifyContent: 'center' }}>
         <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#262626' }}>
-          {name}
+          {user.displayName}
         </Text>
         {location && (
           <Text style={{ fontSize: 10, color: '#262626' }}>{location}</Text>

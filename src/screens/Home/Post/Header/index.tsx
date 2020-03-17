@@ -18,7 +18,7 @@ export default ({ user }: { user: Partial<IUser> }) => {
         justifyContent: 'space-between',
       }}
     >
-      <Title imgUrl={user.avatarImg!} name={user.displayName!} />
+      <Title user={user} />
       <PostOptions />
     </View>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { IComment } from '../../../../hacks';
+import { IComment } from '../../../../hacks/typs';
 
 export default ({ username, comment }: IComment) => {
   return (

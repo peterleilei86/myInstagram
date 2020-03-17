@@ -4,10 +4,27 @@ import { IComment, IPost, IUser, IStory } from './typs';
 export const sleep = (wait = 1000) =>
   new Promise(resolve => setTimeout(resolve, wait));
 
-export const getUser = (username: string): Partial<IUser> => ({
+export const getMe = (username: string): Partial<IUser> => ({
+  id: faker.random.uuid(),
   displayName: username,
-  avatarImg: 'https://source.unsplash.com/WLUHO9A_xik/80x45',
+  avatarImg: faker.image.avatar(),
+  stories: generateStories(username, faker.random.number(4)),
+  posts: makePosts(
+    Array.from({ length: faker.random.number(5) }, _ => faker.random.image()),
+  ),
 });
+
+export const getUsersWithStories = (): Partial<IUser>[] => {
+  return Array.from({ length: faker.random.number(10) }, _ => {
+    const username = faker.name.findName();
+    return {
+      id: faker.random.uuid(),
+      displayName: username,
+      avatarImg: faker.image.avatar(),
+      stories: generateStories(username, faker.random.number(4)),
+    };
+  });
+};
 
 const IMAGESURL = 'https://dog.ceo/api/breeds/image/random';
 export const fetchPosts = async (
@@ -25,31 +42,38 @@ export const fetchPosts = async (
 
 function makePosts(imgs: string[]): IPost[] {
   const numOfComments = Math.floor(Math.random() * 3);
-  return imgs.map(img => ({
-    id: faker.random.uuid(),
-    user: {
-      displayName: faker.name.findName(),
-      avatarImg: faker.image.avatar(),
-    },
-    img,
-    caption: faker.lorem.sentences(3),
-    likes: faker.random.number(50),
-    comments: generateComments(numOfComments),
-    timestamp: faker.date.recent(),
-  }));
+  return imgs.map(img => {
+    const displayName = faker.name.findName();
+    const postId = faker.random.uuid();
+    return {
+      id: postId,
+      user: {
+        id: faker.random.uuid(),
+        displayName,
+        avatarImg: faker.image.avatar(),
+        stories: generateStories(displayName, faker.random.number(4)),
+      },
+      img,
+      caption: faker.lorem.sentences(3),
+      likes: faker.random.number(50),
+      comments: generateComments(postId, numOfComments),
+      timestamp: faker.date.recent(),
+    };
+  });
 }
 
-function generateComments(num: number = 5): IComment[] {
+function generateComments(postId: string, num: number = 5): IComment[] {
   return Array.from({ length: num }, _ => ({
     username: faker.name.findName(),
     comment: faker.lorem.sentences(faker.random.number(5)),
   }));
 }
 
-export function generateStories(num: number = 10): IStory[] {
+export function generateStories(username: string, num: number = 10): IStory[] {
   return Array.from({ length: num }, _ => ({
-    username: faker.name.findName(),
-    avatarImage: faker.image.avatar(),
-    isNew: faker.random.boolean(),
+    key: faker.random.uuid(),
+    story: faker.image.image(),
+    username,
+    seen: faker.random.boolean(),
   }));
 }

@@ -6,30 +6,41 @@ import {
   TouchableWithoutFeedback,
   Text,
 } from 'react-native';
+import { IStory } from 'src/hacks/typs';
+import { useNavigation } from '@react-navigation/native';
 
 interface Profile {
+  userId: string;
   imgUrl?: string;
-  username: string;
-  story: { has: boolean; new: boolean };
+  username?: string;
+  stories: IStory[];
   height?: number;
   width?: number;
   isOwn?: boolean;
   isStory?: boolean;
   styleProp?: StyleProp<any>;
+  onPress: (userId: string, key: string) => void;
 }
 
 function Circle({
+  userId,
   imgUrl,
   username,
-  story,
+  stories,
   height,
   isOwn = false,
   width,
   isStory = true,
   styleProp,
+  onPress,
 }: Profile) {
+  const allSeen = stories && stories.length && stories.every(s => s.seen);
+  const navigation = useNavigation();
+  // const handleOnPress = () => {
+  //   onPress(userId, )
+  // }
   return (
-    <TouchableWithoutFeedback onPress={() => {}}>
+    <TouchableWithoutFeedback onPress={() => navigation.navigate('Story')}>
       <View
         style={[
           {
@@ -50,14 +61,15 @@ function Circle({
               borderRadius: 50,
               position: 'relative',
             },
-            story.has && {
-              padding: 2,
-              borderWidth: 1.5,
-              borderColor: story.new ? 'red' : '#dbdbdb',
-            },
+            stories &&
+              stories.length !== 0 && {
+                padding: 2,
+                borderWidth: 1.5,
+                borderColor: !allSeen ? 'red' : '#dbdbdb',
+              },
           ]}
         >
-          {!story.has && isOwn && (
+          {stories && stories.length === 0 && isOwn && (
             <View
               style={{
                 borderRadius: 50,

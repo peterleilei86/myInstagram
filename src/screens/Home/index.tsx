@@ -4,8 +4,8 @@ import { RouteProp } from '@react-navigation/native';
 import { AuthenticatedStackList } from 'src/routes/types';
 import Stories from './Stories';
 import Post from './Post';
-import { usePost, useStories } from './Post/hooks';
-import { getUser } from '../../hacks';
+import { usePost, useStories } from './hooks';
+import { getMe } from '../../hacks';
 
 function HomeScreen({
   route,
@@ -16,14 +16,15 @@ function HomeScreen({
     state: { posts, refreshing },
     onLoad,
   } = usePost();
-  const { stories, refreshStories } = useStories();
+  const { users, setUsers, refreshusers } = useStories();
+
   const { email } = JSON.parse(route.params.token);
-  const user = getUser(email);
+  const me = getMe(email);
 
   const fetchMorePosts = () => onLoad();
 
   const handleRefresh = () => {
-    refreshStories();
+    refreshusers();
     onLoad(false, true);
   };
 
@@ -37,11 +38,11 @@ function HomeScreen({
         data={posts}
         renderItem={handleRenderItem}
         ListHeaderComponent={() => {
-          return <Stories user={user} stories={stories} />;
+          return <Stories setUsers={setUsers} me={me} users={users} />;
         }}
         refreshing={refreshing}
         onEndReached={fetchMorePosts}
-        onEndReachedThreshold={0.3}
+        onEndReachedThreshold={0.8}
         onRefresh={handleRefresh}
       />
     </View>

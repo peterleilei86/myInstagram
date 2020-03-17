@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react';
-import { fetchPosts, generateStories } from '../../../../hacks';
-import { IPost, IStory } from '../../../../hacks/typs';
+import React, { useState, useEffect, useReducer } from 'react';
+import { fetchPosts, getUsersWithStories } from '../../../hacks';
+import { IPost, IUser } from '../../../hacks/typs';
 
 const initialState: { posts: IPost[]; refreshing: boolean; error: string } = {
   posts: [],
@@ -57,8 +57,8 @@ export const usePost = () => {
 };
 
 export const useStories = () => {
-  const initialStories = generateStories();
-  const [stories, setStories] = useState<IStory[]>(initialStories);
-  const refreshStories = () => setStories(generateStories());
-  return { stories, refreshStories };
+  const initialUsers = getUsersWithStories();
+  const [users, setUsers] = useState<Partial<IUser>[]>(initialUsers);
+  const refreshusers = () => setUsers(getUsersWithStories());
+  return { users, setUsers, refreshusers };
 };

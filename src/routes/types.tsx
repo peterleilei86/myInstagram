@@ -10,6 +10,11 @@ export type AuthenticatedStackList = {
   Profile: undefined;
 };
 
+export type RootAuthStackList = {
+  Root: { token: string };
+  Story: undefined;
+};
+
 export type HomeStackList = {
   Home: { token: string };
 };

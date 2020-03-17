@@ -18,8 +18,14 @@ import HomeHeaderTitle from '../screens/Home/HomeHeaderTitle';
 import HomeHeaderRight from '../screens/Home/HomeHeaderRight';
 import HomeHeaderLeft from '../screens/Home/HomeHeaderLeft';
 import Icon from '../components/Icon';
-import { AuthStackList, AuthenticatedStackList, HomeStackList } from './types';
+import {
+  AuthStackList,
+  AuthenticatedStackList,
+  HomeStackList,
+  RootAuthStackList,
+} from './types';
 import { RouteProp } from '@react-navigation/native';
+import Story from '../screens/Story';
 
 const AuthStack = createStackNavigator<AuthStackList>();
 
@@ -34,6 +40,7 @@ const AuthRoutes = () => (
   </AuthStack.Navigator>
 );
 
+const RootAuthedStack = createStackNavigator<RootAuthStackList>();
 const AuthenticatedStack = createBottomTabNavigator<AuthenticatedStackList>();
 
 const HomeStack = createStackNavigator<HomeStackList>();
@@ -57,7 +64,11 @@ const HomeRoutes = ({
   </HomeStack.Navigator>
 );
 
-const AuthenticatedRoutes = ({ token }: { token: string }) => (
+const AuthenticatedRoutes = ({
+  route,
+}: {
+  route: RouteProp<RootAuthStackList, 'Root'>;
+}) => (
   <AuthenticatedStack.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused }) => {
@@ -125,7 +136,7 @@ const AuthenticatedRoutes = ({ token }: { token: string }) => (
     }}
   >
     <AuthenticatedStack.Screen
-      initialParams={{ token }}
+      initialParams={{ token: route.params.token }}
       name="Home"
       component={HomeRoutes}
     />
@@ -136,9 +147,20 @@ const AuthenticatedRoutes = ({ token }: { token: string }) => (
   </AuthenticatedStack.Navigator>
 );
 
+const RootAuthedStackRoutes = ({ token }: { token: string }) => (
+  <RootAuthedStack.Navigator mode="modal" headerMode="none">
+    <RootAuthedStack.Screen
+      name="Root"
+      component={AuthenticatedRoutes}
+      initialParams={{ token }}
+    />
+    <RootAuthedStack.Screen name="Story" component={Story} />
+  </RootAuthedStack.Navigator>
+);
+
 function Routes() {
   const { token } = useAuth();
-  return token ? <AuthenticatedRoutes token={token} /> : <AuthRoutes />;
+  return token ? <RootAuthedStackRoutes token={token} /> : <AuthRoutes />;
 }
 
 export default Routes;

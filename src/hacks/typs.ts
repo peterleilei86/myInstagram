@@ -1,9 +1,12 @@
 export interface IUser {
+  id: string;
   displayName: string;
   avatarImg: string;
   email: string;
   password: string;
   posts: IPost[];
+  stories: IStory[];
+  followers: IUser[];
 }
 
 export interface IComment {
@@ -22,7 +25,8 @@ export interface IPost {
 }
 
 export interface IStory {
+  key: string;
+  story: string;
   username: string;
-  avatarImage: string;
-  isNew: boolean;
+  seen: boolean;
 }
