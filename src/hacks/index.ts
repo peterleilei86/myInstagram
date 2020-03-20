@@ -1,25 +1,32 @@
+import React from 'react';
 import * as faker from 'faker';
 import { IComment, IPost, IUser, IStory } from './typs';
 
 export const sleep = (wait = 1000) =>
   new Promise(resolve => setTimeout(resolve, wait));
 
-export const getMe = (username: string): Partial<IUser> => ({
-  id: faker.random.uuid(),
-  displayName: username,
-  avatarImg: faker.image.avatar(),
-  stories: generateStories(username, faker.random.number(4)),
-  posts: makePosts(
-    Array.from({ length: faker.random.number(5) }, _ => faker.random.image()),
-  ),
-});
+export const getMe = (token: string): Partial<IUser> => {
+  const username = faker.internet.userName();
+  const { email } = JSON.parse(token);
+  return {
+    id: faker.random.uuid(),
+    email,
+    displayName: username,
+    avatarImg: faker.image.avatar(),
+    stories: generateStories(username, faker.random.number(4)),
+    posts: makePosts(
+      Array.from({ length: faker.random.number(5) }, _ => faker.random.image()),
+    ),
+  };
+};
 
 export const getUsersWithStories = (): Partial<IUser>[] => {
   return Array.from({ length: faker.random.number(10) }, _ => {
-    const username = faker.name.findName();
+    const username = faker.internet.userName();
     return {
       id: faker.random.uuid(),
       displayName: username,
+      email: faker.internet.email(),
       avatarImg: faker.image.avatar(),
       stories: generateStories(username, faker.random.number(4)),
     };
@@ -74,6 +81,6 @@ export function generateStories(username: string, num: number = 10): IStory[] {
     key: faker.random.uuid(),
     story: faker.image.image(),
     username,
-    seen: faker.random.boolean(),
+    seen: false,
   }));
 }

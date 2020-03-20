@@ -26,6 +26,8 @@ import {
 } from './types';
 import { RouteProp } from '@react-navigation/native';
 import Story from '../screens/Story';
+import { PostProvider } from '../contexts/post';
+import { StoriesProvider } from '../contexts/stories';
 
 const AuthStack = createStackNavigator<AuthStackList>();
 
@@ -158,9 +160,17 @@ const RootAuthedStackRoutes = ({ token }: { token: string }) => (
   </RootAuthedStack.Navigator>
 );
 
+const RootWithProviders = ({ token }: { token: string }) => (
+  <PostProvider>
+    <StoriesProvider token={token}>
+      <RootAuthedStackRoutes token={token} />
+    </StoriesProvider>
+  </PostProvider>
+);
+
 function Routes() {
   const { token } = useAuth();
-  return token ? <RootAuthedStackRoutes token={token} /> : <AuthRoutes />;
+  return token ? <RootWithProviders token={token} /> : <AuthRoutes />;
 }
 
 export default Routes;

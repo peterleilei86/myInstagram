@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import Circle from './Circle';
-import { IStory, IUser } from '../../../hacks/typs';
+import { IUser } from '../../../hacks/typs';
 
 function Stories({
   users,
@@ -12,17 +12,6 @@ function Stories({
   me: Partial<IUser>;
   setUsers: React.Dispatch<React.SetStateAction<Partial<IUser>[]>>;
 }) {
-  const updateStory = (userId: string, storyKey: string) => {
-    const user = users.find(u => u.id === userId);
-    const newStories = user!.stories!.map(s =>
-      s.key === storyKey ? { ...s, seen: true } : s,
-    );
-    const newUsers = users.map(u =>
-      u.id === userId ? { ...u, stories: newStories } : u,
-    );
-    setUsers(newUsers);
-  };
-
   return (
     <View
       style={{
@@ -33,14 +22,17 @@ function Stories({
         borderBottomWidth: 1,
       }}
     >
-      <ScrollView horizontal style={{ paddingLeft: 10.5 }}>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        horizontal
+        style={{ paddingLeft: 10.5 }}
+      >
         <Circle
           userId={me.id!}
           imgUrl={me.avatarImg!}
           username={me.displayName!}
           stories={me.stories!}
           isOwn={true}
-          onPress={updateStory}
         />
         {users.map((u, i) => {
           return (
@@ -50,7 +42,6 @@ function Stories({
               username={u.displayName!}
               stories={u.stories!}
               key={i}
-              onPress={updateStory}
             />
           );
         })}

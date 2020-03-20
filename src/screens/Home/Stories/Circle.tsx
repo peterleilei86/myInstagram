@@ -19,7 +19,6 @@ interface Profile {
   isOwn?: boolean;
   isStory?: boolean;
   styleProp?: StyleProp<any>;
-  onPress: (userId: string, key: string) => void;
 }
 
 function Circle({
@@ -32,15 +31,20 @@ function Circle({
   width,
   isStory = true,
   styleProp,
-  onPress,
 }: Profile) {
   const allSeen = stories && stories.length && stories.every(s => s.seen);
   const navigation = useNavigation();
-  // const handleOnPress = () => {
-  //   onPress(userId, )
-  // }
+
   return (
-    <TouchableWithoutFeedback onPress={() => navigation.navigate('Story')}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        if (isOwn && stories.length === 0) {
+          // open camera
+        } else {
+          navigation.navigate('Story', { userId, stories });
+        }
+      }}
+    >
       <View
         style={[
           {

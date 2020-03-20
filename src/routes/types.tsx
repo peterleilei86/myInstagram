@@ -1,3 +1,5 @@
+import { IStory } from '../hacks/typs';
+
 export type AuthStackList = {
   Auth: undefined;
 };
@@ -12,7 +14,7 @@ export type AuthenticatedStackList = {
 
 export type RootAuthStackList = {
   Root: { token: string };
-  Story: undefined;
+  Story: { userId: string; stories: IStory[]; updateStory: any };
 };
 
 export type HomeStackList = {
