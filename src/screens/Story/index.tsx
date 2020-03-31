@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Button,
-  Image,
-  Dimensions,
-  Animated,
-  SafeAreaView,
-} from 'react-native';
+import { View, Image, Dimensions, Animated, SafeAreaView } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { RootAuthStackList } from 'src/routes/types';
 import { IStory } from 'src/hacks/typs';

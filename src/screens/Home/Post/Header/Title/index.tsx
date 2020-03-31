@@ -6,9 +6,10 @@ import { IUser } from 'src/hacks/typs';
 interface TitleProps {
   user: Partial<IUser>;
   location?: string;
+  postId?: string;
 }
 
-function Title({ user, location }: TitleProps) {
+function Title({ user, location, postId }: TitleProps) {
   return (
     <View
       style={{
@@ -18,6 +19,7 @@ function Title({ user, location }: TitleProps) {
       }}
     >
       <Circle
+        postId={postId}
         userId={user.id!}
         imgUrl={user.avatarImg}
         height={35}

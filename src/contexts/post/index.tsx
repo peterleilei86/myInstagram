@@ -77,10 +77,11 @@ const PostProvider = ({ children }: { children: any }) => {
     }
   };
 
-  const updatePostStories = (postId: string, storyKey: string) => ({
-    type: 'updatePostStories',
-    payload: { postId, storyKey },
-  });
+  const updatePostStories = (postId: string, storyKey: string) =>
+    dispatch({
+      type: 'updatePostStories',
+      payload: { postId, storyKey },
+    });
 
   useEffect(() => {
     onLoad(true);
