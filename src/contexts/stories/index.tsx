@@ -1,18 +1,54 @@
-import React, { createContext, useState, useMemo, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { getUsersWithStories, getMe } from '../../hacks';
-import { IUser } from '../../hacks/typs';
+import { IUser, IStory } from '../../hacks/typs';
 
 const StoriesContext = createContext<{
   users: any[];
-  setUsers: any;
+  loading: boolean;
+  loadStories: any;
   updateStory: any;
-  refreshusers: any;
 }>({
   users: [],
-  setUsers: () => {},
+  loading: false,
+  loadStories: () => {},
   updateStory: () => {},
-  refreshusers: () => {},
 });
+
+const initialState: {
+  users: Partial<IUser>[];
+  loading: boolean;
+  error: string;
+} = {
+  users: [],
+  loading: false,
+  error: '',
+};
+
+const storiesReducer = (state = initialState, action: any) => {
+  switch (action.type) {
+    case 'onLoad':
+      return { ...state, users: action.payload };
+    case 'loading':
+      return { ...state, loading: action.payload };
+    case 'updateStory':
+      const newUsers = state.users.map((u: Partial<IUser>) =>
+        u.id === action.payload.userId
+          ? {
+              ...u,
+              stories: u.stories!.map(s =>
+                s.key === action.payload.storyKey ? { ...s, seen: true } : s,
+              ),
+            }
+          : u,
+      );
+      return {
+        ...state,
+        users: newUsers,
+      };
+    default:
+      return state;
+  }
+};
 
 const StoriesProvider = ({
   token,
@@ -21,29 +57,52 @@ const StoriesProvider = ({
   token: string;
   children: any;
 }) => {
-  const me = useMemo(() => getMe(token), [token]);
-  const initialUsers = [...getUsersWithStories(), me];
-  const [users, setUsers] = useState<Partial<IUser>[]>(initialUsers);
-  const refreshusers = () => setUsers(getUsersWithStories());
+  const [{ users, loading }, dispatch] = useReducer(
+    storiesReducer,
+    initialState,
+  );
 
-  const updateStory = (userId: string, storyKey: string) => {
-    setUsers(users =>
-      users.map(u =>
-        u.id === userId
-          ? {
-              ...u,
-              stories: u.stories!.map(s =>
-                s.key === storyKey ? { ...s, seen: true } : s,
-              ),
-            }
-          : u,
-      ),
-    );
+  const loadStories = async () => {
+    try {
+      dispatch({ type: 'loading', payload: true });
+      const [users, me] = await Promise.all([
+        getUsersWithStories(),
+        getMe(token),
+      ]);
+
+      const sortUsers = users.slice().sort((u1: any, u2: any) => {
+        if (
+          u1.stories!.every((s: IStory) => s.seen) &&
+          !u2.stories!.every((s: IStory) => s.seen)
+        ) {
+          return 1;
+        }
+        if (
+          !u1.stories!.every((s: IStory) => s.seen) &&
+          u2.stories!.every((s: IStory) => s.seen)
+        ) {
+          return -1;
+        }
+        return 0;
+      });
+      dispatch({ type: 'onLoad', payload: [...sortUsers, me] });
+    } catch (error) {
+      dispatch({ type: 'onError', payload: error });
+    } finally {
+      dispatch({ type: 'loading', payload: false });
+    }
   };
+
+  const updateStory = (userId: string, storyKey: string) =>
+    dispatch({ type: 'updateStory', payload: { userId, storyKey } });
+
+  useEffect(() => {
+    loadStories();
+  }, []);
 
   return (
     <StoriesContext.Provider
-      value={{ users, updateStory, setUsers, refreshusers }}
+      value={{ users, loading, updateStory, loadStories }}
     >
       {children}
     </StoriesContext.Provider>

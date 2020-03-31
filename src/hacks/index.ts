@@ -5,32 +5,39 @@ import { IComment, IPost, IUser, IStory } from './typs';
 export const sleep = (wait = 1000) =>
   new Promise(resolve => setTimeout(resolve, wait));
 
-export const getMe = (token: string): Partial<IUser> => {
+export const getMe = async (token: string): Promise<Partial<IUser>> => {
   const username = faker.internet.userName();
   const { email } = JSON.parse(token);
+  const stories = await makeStories(username);
   return {
     id: faker.random.uuid(),
     email,
     displayName: username,
     avatarImg: faker.image.avatar(),
-    stories: generateStories(username, faker.random.number(4)),
-    posts: makePosts(
+    stories,
+    posts: await makePosts(
       Array.from({ length: faker.random.number(5) }, _ => faker.random.image()),
     ),
   };
 };
 
-export const getUsersWithStories = (): Partial<IUser>[] => {
-  return Array.from({ length: faker.random.number(10) }, _ => {
-    const username = faker.internet.userName();
-    return {
-      id: faker.random.uuid(),
-      displayName: username,
-      email: faker.internet.email(),
-      avatarImg: faker.image.avatar(),
-      stories: generateStories(username, faker.random.number(4)),
-    };
-  });
+export const getUsersWithStories = async (): Promise<any> => {
+  const usersPromises = Array.from(
+    { length: faker.random.number(10) },
+    async () => {
+      const username = faker.internet.userName();
+      const stories = await makeStories(username);
+      return {
+        id: faker.random.uuid(),
+        displayName: username,
+        email: faker.internet.email(),
+        avatarImg: faker.image.avatar(),
+        stories,
+      };
+    },
+  );
+
+  return Promise.all(usersPromises);
 };
 
 const IMAGESURL = 'https://dog.ceo/api/breeds/image/random';
@@ -40,16 +47,17 @@ export const fetchPosts = async (
   try {
     const data = await fetch(`${IMAGESURL}/${limit}`);
     const { message, status } = await data.json();
-    const posts = makePosts(message);
+    const posts = await makePosts(message);
     return { posts, status };
   } catch (error) {
     return { posts: [], status: error };
   }
 };
 
-function makePosts(imgs: string[]): IPost[] {
+async function makePosts(imgs: string[]): Promise<any> {
   const numOfComments = Math.floor(Math.random() * 3);
-  return imgs.map(img => {
+
+  const postsPromises = imgs.map(async img => {
     const displayName = faker.name.findName();
     const postId = faker.random.uuid();
     return {
@@ -58,7 +66,7 @@ function makePosts(imgs: string[]): IPost[] {
         id: faker.random.uuid(),
         displayName,
         avatarImg: faker.image.avatar(),
-        stories: generateStories(displayName, faker.random.number(4)),
+        stories: await makeStories(displayName),
       },
       img,
       caption: faker.lorem.sentences(3),
@@ -67,20 +75,36 @@ function makePosts(imgs: string[]): IPost[] {
       timestamp: faker.date.recent(),
     };
   });
+
+  return await Promise.all(postsPromises);
 }
 
 function generateComments(postId: string, num: number = 5): IComment[] {
   return Array.from({ length: num }, _ => ({
+    postId,
     username: faker.name.findName(),
     comment: faker.lorem.sentences(faker.random.number(5)),
   }));
 }
 
-export function generateStories(username: string, num: number = 10): IStory[] {
-  return Array.from({ length: num }, _ => ({
-    key: faker.random.uuid(),
-    story: faker.image.image(),
-    username,
-    seen: false,
-  }));
+async function makeStories(username: string): Promise<IStory[]> {
+  try {
+    const limit = faker.random.number(5) + 1;
+    const data = await fetch(`${IMAGESURL}/${limit}`);
+    const { message, status } = await data.json();
+    if (status === 'success') {
+      return message.map((img: string) => ({
+        key: faker.random.uuid(),
+        story: img,
+        username,
+        seen: false,
+      }));
+    } else {
+      console.log(status);
+      return [];
+    }
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 }

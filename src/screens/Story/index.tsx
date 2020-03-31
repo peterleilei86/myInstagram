@@ -12,11 +12,14 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { RootAuthStackList } from 'src/routes/types';
 import { IStory } from 'src/hacks/typs';
 import { useStories } from '../../contexts/stories';
+import { usePost } from '../../contexts/post';
 
 export default () => {
   const { params } = useRoute<RouteProp<RootAuthStackList, 'Story'>>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const { updateStory } = useStories();
+  const { updatePostStories } = usePost();
+  const update = params.postId ? updatePostStories : updateStory;
 
   return (
     <SafeAreaView
@@ -38,9 +41,9 @@ export default () => {
             start={i === currentIndex}
             setCurrentIndex={setCurrentIndex}
             max={params.stories.length}
-            userId={params.userId}
+            id={params.postId ? params.postId : params.userId}
             story={s}
-            update={updateStory}
+            update={update}
           />
         ))}
       </View>
@@ -80,7 +83,7 @@ function Bar({
   setCurrentIndex,
   max,
   update,
-  userId,
+  id,
   story,
 }: {
   index: number;
@@ -88,7 +91,7 @@ function Bar({
   setCurrentIndex: any;
   max: number;
   update: any;
-  userId: string;
+  id: string;
   story: IStory;
 }) {
   const navigation = useNavigation();
@@ -105,7 +108,7 @@ function Bar({
         } else {
           setCurrentIndex(index + 1);
         }
-        update(userId, story.key);
+        update(id, story.key);
       });
     }
   }, [start]);

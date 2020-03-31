@@ -14,7 +14,7 @@ export type AuthenticatedStackList = {
 
 export type RootAuthStackList = {
   Root: { token: string };
-  Story: { userId: string; stories: IStory[]; updateStory: any };
+  Story: { userId: string; stories: IStory[]; updateStory: any; postId: any };
 };
 
 export type HomeStackList = {

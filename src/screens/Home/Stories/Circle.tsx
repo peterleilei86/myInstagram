@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 
 interface Profile {
   userId: string;
+  postId?: string;
   imgUrl?: string;
   username?: string;
   stories: IStory[];
@@ -23,6 +24,7 @@ interface Profile {
 
 function Circle({
   userId,
+  postId,
   imgUrl,
   username,
   stories,
@@ -41,7 +43,7 @@ function Circle({
         if (isOwn && stories.length === 0) {
           // open camera
         } else {
-          navigation.navigate('Story', { userId, stories });
+          navigation.navigate('Story', { postId, userId, stories });
         }
       }}
     >

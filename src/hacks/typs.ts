@@ -10,6 +10,7 @@ export interface IUser {
 }
 
 export interface IComment {
+  postId: string;
   username: string;
   comment: string;
 }

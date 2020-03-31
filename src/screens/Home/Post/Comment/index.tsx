@@ -2,12 +2,12 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { IComment } from '../../../../hacks/typs';
 
-export default ({ username, comment }: IComment) => {
+export default ({ username, comment }: Partial<IComment>) => {
   return (
     <View style={{ flexDirection: 'row', width: '100%' }}>
       <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
         {username}{' '}
-        {comment.split(' ').map((phrase, i) => {
+        {comment!.split(' ').map((phrase, i) => {
           if (phrase.startsWith('#')) {
             return (
               <Text

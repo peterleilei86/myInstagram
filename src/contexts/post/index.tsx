@@ -1,17 +1,16 @@
-import React, {
-  ReactChildren,
-  createContext,
-  useReducer,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { createContext, useReducer, useEffect, useContext } from 'react';
 import { IPost } from '../../hacks/typs';
 import { fetchPosts } from '../../hacks';
 
 const PostContext = createContext<{
   state: { posts: IPost[]; refreshing: boolean; error: string };
   onLoad: any;
-}>({ state: { posts: [], refreshing: false, error: '' }, onLoad: () => {} });
+  updatePostStories: any;
+}>({
+  state: { posts: [], refreshing: false, error: '' },
+  onLoad: () => {},
+  updatePostStories: () => {},
+});
 
 const initialState: { posts: IPost[]; refreshing: boolean; error: string } = {
   posts: [],
@@ -28,6 +27,24 @@ const postReducer = (state = initialState, action: any) => {
           action.payload.initial || action.payload.refreshing
             ? action.payload.posts
             : [...state.posts, ...action.payload.posts],
+      };
+    case 'updatePostStories':
+      const posts = state.posts.map(p =>
+        p.id === action.payload.postId
+          ? {
+              ...p,
+              user: {
+                ...p.user,
+                stories: p!.user.stories!.map(s =>
+                  s.key === action.payload.storyKey ? { ...s, seen: true } : s,
+                ),
+              },
+            }
+          : p,
+      );
+      return {
+        ...state,
+        posts,
       };
     case 'onRefreshing':
       return { ...state, refreshing: action.payload };
@@ -60,12 +77,17 @@ const PostProvider = ({ children }: { children: any }) => {
     }
   };
 
+  const updatePostStories = (postId: string, storyKey: string) => ({
+    type: 'updatePostStories',
+    payload: { postId, storyKey },
+  });
+
   useEffect(() => {
     onLoad(true);
   }, []);
 
   return (
-    <PostContext.Provider value={{ state, onLoad }}>
+    <PostContext.Provider value={{ state, onLoad, updatePostStories }}>
       {children}
     </PostContext.Provider>
   );

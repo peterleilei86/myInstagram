@@ -25,7 +25,6 @@ function Title({ user, location }: TitleProps) {
         stories={user.stories!}
         styleProp={{ marginRight: 0 }}
         isStory={false}
-        onPress={() => {}}
       />
       <View style={{ marginLeft: 5, justifyContent: 'center' }}>
         <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#262626' }}>

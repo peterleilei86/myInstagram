@@ -4,7 +4,7 @@ import Title from './Title';
 import PostOptions from './PostOptions';
 import { IUser } from '../../../../hacks/typs';
 
-export default ({ user }: { user: Partial<IUser> }) => {
+export default ({ user, postId }: { user: Partial<IUser>; postId: string }) => {
   return (
     <View
       style={{
@@ -18,7 +18,7 @@ export default ({ user }: { user: Partial<IUser> }) => {
         justifyContent: 'space-between',
       }}
     >
-      <Title user={user} />
+      <Title user={user} postId={postId} />
       <PostOptions />
     </View>
   );

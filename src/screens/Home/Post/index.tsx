@@ -8,13 +8,13 @@ import Time from './Time';
 import { IPost } from '../../../hacks/typs';
 
 function Post({
-  post: { user, img, caption, comments, timestamp },
+  post: { id, user, img, caption, comments, timestamp },
 }: {
   post: IPost;
 }) {
   return (
     <View>
-      <Header user={user} />
+      <Header user={user} postId={id} />
       <PostImage imgUrl={img} />
       <View style={{ paddingHorizontal: 15.5 }}>
         <PostActions />
