@@ -2,7 +2,6 @@ import React from 'react';
 import { View, ScrollView } from 'react-native';
 import Circle from './Circle';
 import { IUser } from '../../../hacks/typs';
-import { useStories } from 'src/contexts/stories';
 
 function Stories({
   users,

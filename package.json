@@ -25,7 +25,8 @@
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.1.0",
-    "react-native-splash-screen": "^3.2.0"
+    "react-native-splash-screen": "^3.2.0",
+    "unsplash-js": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
@@ -33,13 +34,16 @@
     "@react-native-community/eslint-config": "^0.0.5",
     "@types/jest": "^24.0.24",
     "@types/react-native": "^0.60.25",
+    "@types/react-native-dotenv": "^0.2.0",
     "@types/react-test-renderer": "16.9.1",
+    "@types/unsplash-js": "^6.0.1",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
     "@typescript-eslint/parser": "^2.12.0",
     "babel-jest": "^24.9.0",
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.56.0",
+    "react-native-dotenv": "^0.2.0",
     "react-test-renderer": "16.9.0",
     "typescript": "^3.7.3"
   },

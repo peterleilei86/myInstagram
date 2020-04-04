@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { View, FlatList, Text } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { AuthenticatedStackList } from 'src/routes/types';
